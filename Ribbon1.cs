@@ -291,5 +291,251 @@ namespace ExcelBelegger
                 }
             }
         }
+
+        private void loadCryptoFiat(object sender, RibbonControlEventArgs e)
+        {
+            MessageBox.Show("Just a test for you");
+
+            var fileContent = string.Empty;
+            var filePath = string.Empty;
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            openFileDialog.InitialDirectory = "c:\\";
+            openFileDialog.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
+            openFileDialog.FilterIndex = 1;
+            openFileDialog.RestoreDirectory = true;
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                //Get the path of specified file
+                filePath = openFileDialog.FileName;
+
+                //Read the contents of the file into a stream
+                var fileStream = openFileDialog.OpenFile();
+
+                using (StreamReader reader = new StreamReader(fileStream))
+                {
+                    string currentLine;
+                    // currentLine will be null when the StreamReader reaches the end of file
+
+
+
+
+
+                    Excel.Worksheet xlSheet = Globals.ThisAddIn.Application.ActiveWorkbook.ActiveSheet;
+                    
+                    xlSheet.Name = "Crypto.com fiat";
+
+
+                    rowIndex = 1;
+
+                    while ((currentLine = reader.ReadLine()) != null)
+                    {
+
+
+
+                        String[] seperated = Regex.Split(currentLine, ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");//currentLine.Split(',');
+
+
+                        columnIndex = 65; // column A
+
+                        foreach (String s in seperated)
+                        {
+                            char c = (char)columnIndex;
+
+                            Excel.Range test = xlSheet.get_Range(c.ToString() + rowIndex);
+                            test.Value2 = s;
+                            columnIndex++;
+                        }
+
+                        rowIndex++;
+
+                        fileContent += currentLine + "/n";
+
+
+                    }
+
+                    //MessageBox.Show(fileContent, "File Content at path: " + filePath, MessageBoxButtons.OK);
+
+                    char check = (char)(columnIndex - 1);
+                    Excel.Range SourceRange = (Excel.Range)xlSheet.get_Range("A1", check.ToString() + (rowIndex - 1)); // or whatever range you want here
+                    FormatAsTable(SourceRange, "Crypto.com valuta", "TableStyleLight9");
+
+
+                    //findAndHighlightValue(SourceRange, "koop", System.Drawing.Color.Green);
+                    //findAndHighlightValue(SourceRange, "kosten", System.Drawing.Color.Red);
+                    //findAndHighlightValue(SourceRange, "storting", System.Drawing.Color.Blue);
+                    //findAndHighlightValue(SourceRange, "Valuta", System.Drawing.Color.Orange);
+                    //findAndHighlightValue(SourceRange, "dividend", System.Drawing.Color.Purple);
+
+                    //findAndReplaceValue(SourceRange, "\"", "");
+                }
+            }
+        }
+
+        private void loadCryptoCard(object sender, RibbonControlEventArgs e)
+        {
+            MessageBox.Show("Just a test for you");
+
+            var fileContent = string.Empty;
+            var filePath = string.Empty;
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            openFileDialog.InitialDirectory = "c:\\";
+            openFileDialog.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
+            openFileDialog.FilterIndex = 1;
+            openFileDialog.RestoreDirectory = true;
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                //Get the path of specified file
+                filePath = openFileDialog.FileName;
+
+                //Read the contents of the file into a stream
+                var fileStream = openFileDialog.OpenFile();
+
+                using (StreamReader reader = new StreamReader(fileStream))
+                {
+                    string currentLine;
+                    // currentLine will be null when the StreamReader reaches the end of file
+
+
+
+
+
+                    Excel.Worksheet xlSheet = Globals.ThisAddIn.Application.ActiveWorkbook.ActiveSheet;
+
+                    xlSheet.Name = "Crypto.com card";
+
+
+                    rowIndex = 1;
+
+                    while ((currentLine = reader.ReadLine()) != null)
+                    {
+
+
+
+                        String[] seperated = Regex.Split(currentLine, ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");//currentLine.Split(',');
+
+
+                        columnIndex = 65; // column A
+
+                        foreach (String s in seperated)
+                        {
+                            char c = (char)columnIndex;
+
+                            Excel.Range test = xlSheet.get_Range(c.ToString() + rowIndex);
+                            test.Value2 = s;
+                            columnIndex++;
+                        }
+
+                        rowIndex++;
+
+                        fileContent += currentLine + "/n";
+
+
+                    }
+
+                    //MessageBox.Show(fileContent, "File Content at path: " + filePath, MessageBoxButtons.OK);
+
+                    char check = (char)(columnIndex - 1);
+                    Excel.Range SourceRange = (Excel.Range)xlSheet.get_Range("A1", check.ToString() + (rowIndex - 1)); // or whatever range you want here
+                    FormatAsTable(SourceRange, "Crypto.com valuta", "TableStyleLight9");
+
+
+                    //findAndHighlightValue(SourceRange, "koop", System.Drawing.Color.Green);
+                    //findAndHighlightValue(SourceRange, "kosten", System.Drawing.Color.Red);
+                    //findAndHighlightValue(SourceRange, "storting", System.Drawing.Color.Blue);
+                    //findAndHighlightValue(SourceRange, "Valuta", System.Drawing.Color.Orange);
+                    //findAndHighlightValue(SourceRange, "dividend", System.Drawing.Color.Purple);
+
+                    //findAndReplaceValue(SourceRange, "\"", "");
+                }
+            }
+        }
+
+        private void loadCrypto(object sender, RibbonControlEventArgs e)
+        {
+            MessageBox.Show("Just a test for you");
+
+            var fileContent = string.Empty;
+            var filePath = string.Empty;
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            openFileDialog.InitialDirectory = "c:\\";
+            openFileDialog.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
+            openFileDialog.FilterIndex = 1;
+            openFileDialog.RestoreDirectory = true;
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                //Get the path of specified file
+                filePath = openFileDialog.FileName;
+
+                //Read the contents of the file into a stream
+                var fileStream = openFileDialog.OpenFile();
+
+                using (StreamReader reader = new StreamReader(fileStream))
+                {
+                    string currentLine;
+                    // currentLine will be null when the StreamReader reaches the end of file
+
+
+
+
+
+                    Excel.Worksheet xlSheet = Globals.ThisAddIn.Application.ActiveWorkbook.ActiveSheet;
+
+                    xlSheet.Name = "Crypto.com crypto";
+
+
+                    rowIndex = 1;
+
+                    while ((currentLine = reader.ReadLine()) != null)
+                    {
+
+
+
+                        String[] seperated = Regex.Split(currentLine, ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");//currentLine.Split(',');
+
+
+                        columnIndex = 65; // column A
+
+                        foreach (String s in seperated)
+                        {
+                            char c = (char)columnIndex;
+
+                            Excel.Range test = xlSheet.get_Range(c.ToString() + rowIndex);
+                            test.Value2 = s;
+                            columnIndex++;
+                        }
+
+                        rowIndex++;
+
+                        fileContent += currentLine + "/n";
+
+
+                    }
+
+                    //MessageBox.Show(fileContent, "File Content at path: " + filePath, MessageBoxButtons.OK);
+
+                    char check = (char)(columnIndex - 1);
+                    Excel.Range SourceRange = (Excel.Range)xlSheet.get_Range("A1", check.ToString() + (rowIndex - 1)); // or whatever range you want here
+                    FormatAsTable(SourceRange, "Crypto.com valuta", "TableStyleLight9");
+
+
+                    //findAndHighlightValue(SourceRange, "koop", System.Drawing.Color.Green);
+                    //findAndHighlightValue(SourceRange, "kosten", System.Drawing.Color.Red);
+                    //findAndHighlightValue(SourceRange, "storting", System.Drawing.Color.Blue);
+                    //findAndHighlightValue(SourceRange, "Valuta", System.Drawing.Color.Orange);
+                    //findAndHighlightValue(SourceRange, "dividend", System.Drawing.Color.Purple);
+
+                    //findAndReplaceValue(SourceRange, "\"", "");
+                }
+            }
+        }
     }
 }
