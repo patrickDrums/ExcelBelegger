@@ -16,9 +16,6 @@ namespace ExcelBelegger
 {
     public partial class Ribbon1
     {
-        private int rowIndex;
-        private int columnIndex; // column A
-
 
         private void Ribbon1_Load(object sender, RibbonUIEventArgs e)
         {
@@ -39,42 +36,7 @@ namespace ExcelBelegger
             }
 
             return columnName;
-        }
-
-        public void findAndHighlightValue(Excel.Range searchRange, String searchTerm, System.Drawing.Color color)
-        {
-            Excel.Range currentFind = null;
-            Excel.Range firstFind = null;
-
-            currentFind = searchRange.Find(searchTerm, Missing.Value,
-            Excel.XlFindLookIn.xlValues, Excel.XlLookAt.xlPart,
-            Excel.XlSearchOrder.xlByRows, Excel.XlSearchDirection.xlNext, false, Missing.Value, Missing.Value);
-
-            int i = 1;
-
-            while (currentFind != null)
-            {
-                // Keep track of the first range you find. 
-                if (firstFind == null)
-                {
-                    firstFind = currentFind;
-                }
-
-                // If you didn't move to a new range, you are done.
-                else if (currentFind.get_Address(Excel.XlReferenceStyle.xlA1)
-                      == firstFind.get_Address(Excel.XlReferenceStyle.xlA1))
-                {
-                    break;
-                }
-
-                currentFind.Rows.Font.Color = System.Drawing.ColorTranslator.ToOle(color);
-                currentFind.Rows.Font.Bold = true;
-
-                currentFind = searchRange.FindNext(currentFind);
-
-                i++;
-            }
-        }
+        } 
 
         public void findAndReplaceValue(Excel.Range searchRange, String searchTerm, String replacement)
         {
@@ -109,26 +71,6 @@ namespace ExcelBelegger
 
                 i++;
             }
-        }
-
-        public void FormatAsTable(Excel.Range SourceRange, string TableName, string TableStyleName)
-        {
-            // Check bouwen of tabel al bestaat
-            if (SourceRange.Worksheet.ListObjects.Count > 0)
-            {
-                MessageBox.Show("Overschrijven bestaande tabel?", "Tabel bestaat al", MessageBoxButtons.YesNo);
-                return;
-            }
-            else
-            {
-                SourceRange.Worksheet.ListObjects.Add(Excel.XlListObjectSourceType.xlSrcRange,
-                SourceRange, System.Type.Missing, Excel.XlYesNoGuess.xlYes, System.Type.Missing).Name =
-                    TableName;
-            }
-               
-            SourceRange.Select();
-            SourceRange.Worksheet.ListObjects[TableName].TableStyle = TableStyleName;
-            
         }
 
         private void createDividendPivotTable(object sender, RibbonControlEventArgs e)
@@ -204,338 +146,47 @@ namespace ExcelBelegger
 
         }
 
-
-
-    
-
-
         private void loadAccountData(object sender, RibbonControlEventArgs e)
         {
-            var fileContent = string.Empty;
-            var filePath = string.Empty;
+            String[] highlights = new string[] { "koop", "kosten", "storting", "Valuta", "dividend" };
+            CsvImporter importer = new CsvImporter();
 
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            FileChooser fc = new FileChooser();
+            fc.Show();
 
-            openFileDialog.InitialDirectory = "c:\\";
-            openFileDialog.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
-            openFileDialog.FilterIndex = 1;
-            openFileDialog.RestoreDirectory = true;
+            //importer.openFile("Account");
 
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                //Get the path of specified file
-                filePath = openFileDialog.FileName;
-
-                //Read the contents of the file into a stream
-                var fileStream = openFileDialog.OpenFile();
-
-                using (StreamReader reader = new StreamReader(fileStream))
-                {
-                    string currentLine;
-                    // currentLine will be null when the StreamReader reaches the end of file
-
-                    
+            //Excel.Range tableRange = importer.GetRange();
 
 
+            //importer.findAndHighlightValue(tableRange, highlights[0], System.Drawing.Color.Green);
 
-                    Excel.Worksheet xlSheet = Globals.ThisAddIn.Application.ActiveWorkbook.ActiveSheet;
-                    xlSheet.Name = "Account";
+            //findAndHighlightValue(SourceRange, "koop", System.Drawing.Color.Green);
+            //findAndHighlightValue(SourceRange, "kosten", System.Drawing.Color.Red);
+            //findAndHighlightValue(SourceRange, "storting", System.Drawing.Color.Blue);
+            //findAndHighlightValue(SourceRange, "Valuta", System.Drawing.Color.Orange);
+            //findAndHighlightValue(SourceRange, "dividend", System.Drawing.Color.Purple);
 
-
-                    rowIndex = 1;
-
-                    while ((currentLine = reader.ReadLine()) != null)
-                    {
-                        
-
-
-                        String[] seperated = Regex.Split(currentLine, ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");//currentLine.Split(',');
-
-
-                        if (currentLine.Contains("geldmarktfonds"))
-                            continue;
-
-
-                        columnIndex = 65; // column A
-
-                        foreach (String s in seperated)
-                        {
-                            char c = (char)columnIndex;
-
-                            Excel.Range test = xlSheet.get_Range(c.ToString() + rowIndex);
-                            test.Value2 = s;
-                            columnIndex++;
-                        }
-
-                        rowIndex++;
-
-                        fileContent += currentLine + "/n";
-                        
-                        
-                    }
-
-                    //MessageBox.Show(fileContent, "File Content at path: " + filePath, MessageBoxButtons.OK);
-
-                    char check = (char) (columnIndex-1);
-                    Excel.Range SourceRange = (Excel.Range)xlSheet.get_Range("A1", check.ToString() + (rowIndex-1)); // or whatever range you want here
-                    FormatAsTable(SourceRange, "Account", "TableStyleLight9");
-
-
-                    findAndHighlightValue(SourceRange, "koop", System.Drawing.Color.Green);
-                    findAndHighlightValue(SourceRange, "kosten", System.Drawing.Color.Red);
-                    findAndHighlightValue(SourceRange, "storting", System.Drawing.Color.Blue);
-                    findAndHighlightValue(SourceRange, "Valuta", System.Drawing.Color.Orange);
-                    findAndHighlightValue(SourceRange, "dividend", System.Drawing.Color.Purple);
-
-                    findAndReplaceValue(SourceRange, "\"", "");
-                }
-            }
+            //findAndReplaceValue(SourceRange, "\"", "");
+            
         }
 
         private void loadCryptoFiat(object sender, RibbonControlEventArgs e)
         {
-            MessageBox.Show("Just a test for you");
-
-            var fileContent = string.Empty;
-            var filePath = string.Empty;
-
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            openFileDialog.InitialDirectory = "c:\\";
-            openFileDialog.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
-            openFileDialog.FilterIndex = 1;
-            openFileDialog.RestoreDirectory = true;
-
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                //Get the path of specified file
-                filePath = openFileDialog.FileName;
-
-                //Read the contents of the file into a stream
-                var fileStream = openFileDialog.OpenFile();
-
-                using (StreamReader reader = new StreamReader(fileStream))
-                {
-                    string currentLine;
-                    // currentLine will be null when the StreamReader reaches the end of file
-
-
-
-
-
-                    Excel.Worksheet xlSheet = Globals.ThisAddIn.Application.ActiveWorkbook.ActiveSheet;
-                    
-                    xlSheet.Name = "Crypto.com fiat";
-
-
-                    rowIndex = 1;
-
-                    while ((currentLine = reader.ReadLine()) != null)
-                    {
-
-
-
-                        String[] seperated = Regex.Split(currentLine, ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");//currentLine.Split(',');
-
-
-                        columnIndex = 65; // column A
-
-                        foreach (String s in seperated)
-                        {
-                            char c = (char)columnIndex;
-
-                            Excel.Range test = xlSheet.get_Range(c.ToString() + rowIndex);
-                            test.Value2 = s;
-                            columnIndex++;
-                        }
-
-                        rowIndex++;
-
-                        fileContent += currentLine + "/n";
-
-
-                    }
-
-                    //MessageBox.Show(fileContent, "File Content at path: " + filePath, MessageBoxButtons.OK);
-
-                    char check = (char)(columnIndex - 1);
-                    Excel.Range SourceRange = (Excel.Range)xlSheet.get_Range("A1", check.ToString() + (rowIndex - 1)); // or whatever range you want here
-                    FormatAsTable(SourceRange, "Crypto.com valuta", "TableStyleLight9");
-
-
-                    //findAndHighlightValue(SourceRange, "koop", System.Drawing.Color.Green);
-                    //findAndHighlightValue(SourceRange, "kosten", System.Drawing.Color.Red);
-                    //findAndHighlightValue(SourceRange, "storting", System.Drawing.Color.Blue);
-                    //findAndHighlightValue(SourceRange, "Valuta", System.Drawing.Color.Orange);
-                    //findAndHighlightValue(SourceRange, "dividend", System.Drawing.Color.Purple);
-
-                    //findAndReplaceValue(SourceRange, "\"", "");
-                }
-            }
-        }
-
-        private void loadCryptoCard(object sender, RibbonControlEventArgs e)
-        {
-            MessageBox.Show("Just a test for you");
-
-            var fileContent = string.Empty;
-            var filePath = string.Empty;
-
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            openFileDialog.InitialDirectory = "c:\\";
-            openFileDialog.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
-            openFileDialog.FilterIndex = 1;
-            openFileDialog.RestoreDirectory = true;
-
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                //Get the path of specified file
-                filePath = openFileDialog.FileName;
-
-                //Read the contents of the file into a stream
-                var fileStream = openFileDialog.OpenFile();
-
-                using (StreamReader reader = new StreamReader(fileStream))
-                {
-                    string currentLine;
-                    // currentLine will be null when the StreamReader reaches the end of file
-
-
-
-
-
-                    Excel.Worksheet xlSheet = Globals.ThisAddIn.Application.ActiveWorkbook.ActiveSheet;
-
-                    xlSheet.Name = "Crypto.com card";
-
-
-                    rowIndex = 1;
-
-                    while ((currentLine = reader.ReadLine()) != null)
-                    {
-
-
-
-                        String[] seperated = Regex.Split(currentLine, ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");//currentLine.Split(',');
-
-
-                        columnIndex = 65; // column A
-
-                        foreach (String s in seperated)
-                        {
-                            char c = (char)columnIndex;
-
-                            Excel.Range test = xlSheet.get_Range(c.ToString() + rowIndex);
-                            test.Value2 = s;
-                            columnIndex++;
-                        }
-
-                        rowIndex++;
-
-                        fileContent += currentLine + "/n";
-
-
-                    }
-
-                    //MessageBox.Show(fileContent, "File Content at path: " + filePath, MessageBoxButtons.OK);
-
-                    char check = (char)(columnIndex - 1);
-                    Excel.Range SourceRange = (Excel.Range)xlSheet.get_Range("A1", check.ToString() + (rowIndex - 1)); // or whatever range you want here
-                    FormatAsTable(SourceRange, "Crypto.com valuta", "TableStyleLight9");
-
-
-                    //findAndHighlightValue(SourceRange, "koop", System.Drawing.Color.Green);
-                    //findAndHighlightValue(SourceRange, "kosten", System.Drawing.Color.Red);
-                    //findAndHighlightValue(SourceRange, "storting", System.Drawing.Color.Blue);
-                    //findAndHighlightValue(SourceRange, "Valuta", System.Drawing.Color.Orange);
-                    //findAndHighlightValue(SourceRange, "dividend", System.Drawing.Color.Purple);
-
-                    //findAndReplaceValue(SourceRange, "\"", "");
-                }
-            }
+            String[] highlights = new string[] { "->", "Deposit", "Withdrawal", "Top" };
+            
         }
 
         private void loadCrypto(object sender, RibbonControlEventArgs e)
         {
-            MessageBox.Show("Just a test for you");
+            String[]highlights = new string[] {"Card", "Rebate"};
+            
+        }
 
-            var fileContent = string.Empty;
-            var filePath = string.Empty;
+        private void loadCoinmerce(object sender, RibbonControlEventArgs e)
+        {
+            String[] highlights = new string[] { };
 
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            openFileDialog.InitialDirectory = "c:\\";
-            openFileDialog.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
-            openFileDialog.FilterIndex = 1;
-            openFileDialog.RestoreDirectory = true;
-
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                //Get the path of specified file
-                filePath = openFileDialog.FileName;
-
-                //Read the contents of the file into a stream
-                var fileStream = openFileDialog.OpenFile();
-
-                using (StreamReader reader = new StreamReader(fileStream))
-                {
-                    string currentLine;
-                    // currentLine will be null when the StreamReader reaches the end of file
-
-
-
-
-
-                    Excel.Worksheet xlSheet = Globals.ThisAddIn.Application.ActiveWorkbook.ActiveSheet;
-
-                    xlSheet.Name = "Crypto.com crypto";
-
-
-                    rowIndex = 1;
-
-                    while ((currentLine = reader.ReadLine()) != null)
-                    {
-
-
-
-                        String[] seperated = Regex.Split(currentLine, ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");//currentLine.Split(',');
-
-
-                        columnIndex = 65; // column A
-
-                        foreach (String s in seperated)
-                        {
-                            char c = (char)columnIndex;
-
-                            Excel.Range test = xlSheet.get_Range(c.ToString() + rowIndex);
-                            test.Value2 = s;
-                            columnIndex++;
-                        }
-
-                        rowIndex++;
-
-                        fileContent += currentLine + "/n";
-
-
-                    }
-
-                    //MessageBox.Show(fileContent, "File Content at path: " + filePath, MessageBoxButtons.OK);
-
-                    char check = (char)(columnIndex - 1);
-                    Excel.Range SourceRange = (Excel.Range)xlSheet.get_Range("A1", check.ToString() + (rowIndex - 1)); // or whatever range you want here
-                    FormatAsTable(SourceRange, "Crypto.com valuta", "TableStyleLight9");
-
-
-                    //findAndHighlightValue(SourceRange, "koop", System.Drawing.Color.Green);
-                    //findAndHighlightValue(SourceRange, "kosten", System.Drawing.Color.Red);
-                    //findAndHighlightValue(SourceRange, "storting", System.Drawing.Color.Blue);
-                    //findAndHighlightValue(SourceRange, "Valuta", System.Drawing.Color.Orange);
-                    //findAndHighlightValue(SourceRange, "dividend", System.Drawing.Color.Purple);
-
-                    //findAndReplaceValue(SourceRange, "\"", "");
-                }
-            }
         }
     }
 }

@@ -162,6 +162,14 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="CsvImporter.cs" />
+    <Compile Include="CsvTransactions.cs" />
+    <Compile Include="FileChooser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FileChooser.Designer.cs">
+      <DependentUpon>FileChooser.cs</DependentUpon>
+    </Compile>
     <Compile Include="SelectColumnForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -171,6 +179,9 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <EmbeddedResource Include="FileChooser.resx">
+      <DependentUpon>FileChooser.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SelectColumnForm.resx">
       <DependentUpon>SelectColumnForm.cs</DependentUpon>
     </EmbeddedResource>
